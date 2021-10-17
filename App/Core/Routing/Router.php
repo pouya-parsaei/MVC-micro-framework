@@ -27,7 +27,7 @@ class Router
     {
         foreach ($this->routes as $route) {
             if (!in_array($request->method(), $route['methods']))
-                return false;
+                continue;
             if ($this->regex_matched($route))
                 return $route;
         }
@@ -42,8 +42,8 @@ class Router
         if (!$result) {
             return false;
         }
-        foreach($matches as $key => $value) {
-            if(!is_int($key)){
+        foreach ($matches as $key => $value) {
+            if (!is_int($key)) {
                 $request->addRouteParam($key, $value);
             }
         }

@@ -52,6 +52,7 @@ class MysqlBaseModel extends BaseModel
             return $this->find($id);
     }
 
+
     public function remove(): int
     {
         $recordId = $this->{$this->primaryKey};
@@ -84,11 +85,16 @@ class MysqlBaseModel extends BaseModel
 
     public function getAll(): array
     {
-        return $this->connection->select($this->table, '*');
+        return $this->get('*', []);
     }
 
-    public function get(array $columns, array $where): array
+    public function get($columns, array $where): array
     {
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
+
+            $start = ($page-1)*$this->pageSize;
+            $where['LIMIT'] = [$start,$this->pageSize];
+        
         return $this->connection->select($this->table, $columns, $where);
     }
 
@@ -117,4 +123,5 @@ class MysqlBaseModel extends BaseModel
     {
         return $this->connection->sum($this->table, $column, $where);
     }
+
 }
